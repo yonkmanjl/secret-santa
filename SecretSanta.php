@@ -23,13 +23,13 @@ session_start();
 body {color:white;}
 </style>
 <?php
-$givers = array(
-    "Tova",
-    "Autumn",
-    "Melanie",
-    "Sanam",
-    "Jenelle"
-);
+
+$givers = explode("\n", file_get_contents('credentials.config'));
+foreach ($givers as &$value) {
+    $temp = explode(",", $value);
+    $value = $temp[0];
+}
+array_pop($givers);
 
 // if user clicked log out, log them out
 if (isset($_POST["logout"]) && $_POST["logout"]) {
@@ -143,7 +143,6 @@ function checkpassword($givers)
 }
 
 
-// math game function
 function showmatches($givers)
 {
     echo '<div class="container">';
@@ -153,7 +152,8 @@ function showmatches($givers)
     $index = array_search($_SESSION["username"], $givers);
     $recipients = readRecipients($givers);
     if ($index !== false) {
-        echo '<h4>Your match is ' . trim($recipients[$index]) . '. Merry Christmas!</h4>';
+        echo '<h4>Your match is ' . trim($recipients[$index]) . '.';
+        echo ' Merry Christmas!</h4>';
     }
     if ($_SESSION["username"] === "Admin") {
         if (isset($_POST["shuffle"]) && $_POST["shuffle"] === "true") {
